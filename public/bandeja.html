@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Bandeja · Combo de la Salud</title>
+<style>
+:root{--bg:#f4f1ea;--panel:#fff;--ink:#1d2a24;--mute:#6b7a72;--line:#e3e0d6;--verde:#1f7a4d;--verde2:#d9f3e3;--asesor:#d9f3e3;--cli:#fff;--bot:#eef0ff;--warn:#b4531a}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1512;--panel:#17201b;--ink:#e8efe9;--mute:#8da296;--line:#26332b;--verde:#3fbf80;--verde2:#1d3a2b;--asesor:#1d3a2b;--cli:#1f2a24;--bot:#232a40;--warn:#e8934f}}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer}
+#login{display:none;min-height:100%;align-items:center;justify-content:center;padding:16px}
+#login form{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;width:100%;max-width:340px;display:grid;gap:12px}
+#login h1{margin:0;font-size:20px}#login p{margin:0;color:var(--mute);font-size:14px}
+input,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+.btn{background:var(--verde);color:#fff;border:0;border-radius:10px;padding:10px 16px;font-weight:600}
+.btn.sec{background:transparent;color:var(--verde);border:1px solid var(--line)}
+#app{display:none;height:100%;grid-template-columns:340px 1fr}
+#side{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.top{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.top b{font-size:16px}.top small{color:var(--mute)}
+#lista{overflow:auto;flex:1}
+.it{padding:12px 16px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:2px 8px;cursor:pointer}
+.it:hover,.it.on{background:var(--verde2)}
+.it .n{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.it .h{color:var(--mute);font-size:12px}
+.it .u{color:var(--mute);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;grid-column:1}
+.dot{background:var(--verde);color:#fff;border-radius:99px;font-size:12px;min-width:20px;height:20px;display:grid;place-items:center;padding:0 6px;font-weight:700;justify-self:end}
+#main{display:flex;flex-direction:column;min-height:0;min-width:0}
+#vacio{margin:auto;color:var(--mute);text-align:center;padding:24px}
+#chat{display:none;flex-direction:column;height:100%;min-height:0}
+#cab{background:var(--panel);border-bottom:1px solid var(--line);padding:10px 14px;display:flex;align-items:center;gap:10px}
+#cab .t{flex:1;min-width:0}#cab .t b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#cab .t small{color:var(--mute)}
+#atras{display:none;background:none;border:0;font-size:22px;color:var(--ink);padding:0 6px}
+#msgs{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:6px}
+.m{max-width:min(78%,520px);padding:8px 12px;border-radius:14px;white-space:pre-wrap;word-wrap:break-word;border:1px solid var(--line)}
+.m.cliente{background:var(--cli);align-self:flex-start;border-bottom-left-radius:4px}
+.m.asesor{background:var(--asesor);align-self:flex-end;border-bottom-right-radius:4px}
+.m.bot{background:var(--bot);align-self:flex-end;border-bottom-right-radius:4px}
+.m small{display:block;color:var(--mute);font-size:11px;margin-top:3px}
+.m .q{font-size:11px;font-weight:700;color:var(--mute);margin-bottom:2px}
+#aviso{display:none;background:#fff4e5;color:var(--warn);padding:8px 14px;font-size:13px;border-top:1px solid var(--line)}
+#rap{display:flex;gap:6px;padding:8px 12px 0;overflow:auto;background:var(--panel);border-top:1px solid var(--line)}
+#rap button{white-space:nowrap;background:var(--verde2);color:var(--ink);border:0;border-radius:99px;padding:5px 12px;font-size:13px}
+#env{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:var(--panel)}
+#env textarea{resize:none;max-height:140px}
+@media(max-width:760px){#app{grid-template-columns:1fr}#side{display:flex}#main{display:none}
+body.chatabierto #side{display:none}body.chatabierto #main{display:flex}#atras{display:block}}
+</style>
+</head>
+<body>
+<div id="login"><form id="fl"><h1>Bandeja del Combo 💚</h1><p>Escribe tu clave para ver y responder los chats.</p>
+<input id="clave" type="password" placeholder="Clave" autocomplete="current-password" required>
+<button class="btn">Entrar</button><p id="le" style="color:var(--warn)"></p></form></div>
+
+<div id="app">
+  <aside id="side"><div class="top"><div><b>Chats</b><br><small id="cnt"></small></div><button class="btn sec" id="salir">Salir</button></div><div id="lista"></div></aside>
+  <section id="main">
+    <div id="vacio">Elige un chat para ver la conversación y responder desde el mismo número.</div>
+    <div id="chat">
+      <div id="cab"><button id="atras" aria-label="Volver">‹</button><div class="t"><b id="cn"></b><small id="ct"></small></div><button class="btn sec" id="botb"></button></div>
+      <div id="msgs"></div>
+      <div id="aviso"></div>
+      <div id="rap"></div>
+      <form id="env"><textarea id="tx" rows="1" placeholder="Escribe tu respuesta…"></textarea><button class="btn">Enviar</button></form>
+    </div>
+  </section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+let actual=null, botPausado=false, ultimaFirma="";
+async function api(a,datos,post){
+  const r=post?await fetch("/api/inbox",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({a,...datos})})
+              :await fetch("/api/inbox?"+new URLSearchParams({a,...datos}));
+  let j={};try{j=await r.json()}catch(e){}
+  if(r.status===401&&a!=="login"){mostrarLogin();throw new Error("auth")}
+  return {ok:r.ok,status:r.status,...j};
+}
+function mostrarLogin(msg){$("#app").style.display="none";$("#login").style.display="flex";$("#le").textContent=msg||""}
+function hora(ts){const d=new Date(ts),h=new Date();const t=d.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});
+  return d.toDateString()===h.toDateString()?t:d.toLocaleDateString("es-CO",{day:"2-digit",month:"short"})+" "+t}
+function nom(c){return c.nombre||c.tel||c.id}
+
+$("#fl").onsubmit=async e=>{e.preventDefault();const r=await api("login",{clave:$("#clave").value},true);
+  if(r.ok){$("#login").style.display="none";iniciar()}else $("#le").textContent=r.error==="sin_clave"?"La clave aún no está configurada (INBOX_KEY).":"Clave incorrecta."};
+$("#salir").onclick=async()=>{await api("salir",{},true);actual=null;mostrarLogin()};
+
+async function lista(){
+  const r=await api("lista",{});if(!r.chats)return;
+  const total=r.chats.reduce((s,c)=>s+c.noLeidos,0);
+  $("#cnt").textContent=r.chats.length+" conversaciones"+(total?" · "+total+" sin leer":"");
+  document.title=(total?"("+total+") ":"")+"Bandeja · Combo de la Salud";
+  const L=$("#lista");L.textContent="";
+  for(const c of r.chats){
+    const d=document.createElement("div");d.className="it"+(c.id===actual?" on":"");
+    const n=document.createElement("div");n.className="n";n.textContent=nom(c);
+    const h=document.createElement("div");h.className="h";h.textContent=hora(c.ts);
+    const u=document.createElement("div");u.className="u";u.textContent=(c.ultimoDe==="cliente"?"":"Tú: ")+c.ultimo.replace(/\n/g," ");
+    d.append(n,h,u);
+    if(c.noLeidos){const b=document.createElement("div");b.className="dot";b.textContent=c.noLeidos;d.append(b)}
+    d.onclick=()=>abrir(c.id);L.append(d);
+  }
+}
+async function abrir(id){
+  actual=id;document.body.classList.add("chatabierto");$("#vacio").style.display="none";$("#chat").style.display="flex";
+  ultimaFirma="";await refrescarChat(true);lista();
+}
+async function refrescarChat(bajar){
+  if(!actual)return;const r=await api("chat",{id:actual});if(!r.chat)return;
+  const c=r.chat;botPausado=r.botPausado;
+  $("#cn").textContent=nom(c);$("#ct").textContent=c.tel&&c.nombre?c.tel:"";
+  $("#botb").textContent=botPausado?"Reactivar bot":"Pausar bot";
+  const ult=c.mensajes.filter(m=>m.de==="cliente").pop();
+  const fuera=!ult||Date.now()-ult.ts>24*3600*1000;
+  const av=$("#aviso");av.style.display=fuera?"block":(botPausado?"block":"none");
+  av.textContent=fuera?"Pasaron más de 24 h desde el último mensaje del cliente: WhatsApp no permite responderle hasta que escriba de nuevo.":"Estás atendiendo tú: el bot está en pausa para este chat (se reactiva solo en 2 h o con el botón).";
+  const firma=c.mensajes.length+":"+c.ts;if(firma===ultimaFirma)return;ultimaFirma=firma;
+  const M=$("#msgs");const abajo=bajar||M.scrollHeight-M.scrollTop-M.clientHeight<80;M.textContent="";
+  for(const m of c.mensajes){
+    const d=document.createElement("div");d.className="m "+m.de;
+    if(m.de==="bot"){const q=document.createElement("div");q.className="q";q.textContent="🤖 Bot";d.append(q)}
+    d.append(document.createTextNode(m.texto));
+    const s=document.createElement("small");s.textContent=hora(m.ts);d.append(s);M.append(d);
+  }
+  if(abajo)M.scrollTop=M.scrollHeight;
+}
+$("#atras").onclick=()=>{document.body.classList.remove("chatabierto");actual=null;$("#chat").style.display="none";$("#vacio").style.display="block";lista()};
+$("#botb").onclick=async()=>{await api("bot",{id:actual,activo:botPausado},true);ultimaFirma="";refrescarChat()};
+$("#env").onsubmit=async e=>{
+  e.preventDefault();const t=$("#tx").value.trim();if(!t||!actual)return;
+  const b=$("#env button");b.disabled=true;
+  const r=await api("enviar",{id:actual,texto:t},true);b.disabled=false;
+  if(r.ok){$("#tx").value="";$("#tx").style.height="";ultimaFirma="";await refrescarChat(true);lista()}
+  else alert(r.detalle||"No se pudo enviar el mensaje.");
+};
+$("#tx").addEventListener("input",e=>{e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,140)+"px"});
+$("#tx").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!/Mobi|Android/i.test(navigator.userAgent)){e.preventDefault();$("#env").requestSubmit()}});
+
+async function iniciar(){
+  $("#app").style.display="grid";
+  const r=await api("rapidas",{});
+  const R=$("#rap");R.textContent="";
+  for(const x of r.rapidas||[]){const b=document.createElement("button");b.type="button";b.textContent=x.t;
+    b.onclick=()=>{$("#tx").value=x.v;$("#tx").dispatchEvent(new Event("input"));$("#tx").focus()};R.append(b)}
+  lista();
+}
+async function arranque(){
+  try{const r=await api("lista",{});
+    if(r.status===503){mostrarLogin("La clave aún no está configurada (INBOX_KEY).");return}
+    if(r.ok){iniciar()}}catch(e){}
+}
+setInterval(()=>{if($("#app").style.display==="grid"){lista();refrescarChat()}},5000);
+arranque();
+</script>
+</body>
+</html>

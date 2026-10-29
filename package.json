@@ -1,0 +1,7 @@
+{
+  "name": "bot-whatsapp-combo-salud",
+  "version": "2.0.0",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": { "@vercel/blob": "2.8.2" }
+}
