@@ -152,7 +152,7 @@ async function arranque(){
     if(r.status===503){mostrarLogin("La clave aún no está configurada (INBOX_KEY).");return}
     if(r.ok){iniciar()}}catch(e){}
 }
-setInterval(()=>{if($("#app").style.display==="grid"){lista();refrescarChat()}},5000);
+setInterval(()=>{if($("#app").style.display==="grid"&&document.visibilityState==="visible"){lista();refrescarChat()}},10000);
 arranque();
 </script>
 </body>

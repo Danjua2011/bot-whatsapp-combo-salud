@@ -3,5 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "type": "commonjs",
-  "dependencies": { "@vercel/blob": "2.8.2" }
+  "dependencies": {
+    "@upstash/redis": "1.35.0"
+  }
 }
